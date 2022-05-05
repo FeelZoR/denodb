@@ -232,7 +232,7 @@ export class Database {
    *
    *     await db.query("SELECT * FROM `flights`");
    */
-  async query(query: QueryDescription): Promise<Model | Model[]> {
+  async query(query: QueryDescription): Promise<Model | Model[] | unknown> {
     if (this._debug) {
       console.log(query);
     }

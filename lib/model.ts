@@ -228,7 +228,7 @@ export class Model {
     const results = await this._database.query(query);
 
     if (query.type) {
-      this._runEventListeners(query.type, results);
+      this._runEventListeners(query.type, results as Model | Model[]);
     }
 
     return results;
@@ -406,7 +406,7 @@ export class Model {
   static get() {
     return this._runQuery(
       this._currentQuery.table(this.table).get().toDescription(),
-    );
+    ) as Promise<Model | Model[]>;
   }
 
   /** Fetch all the model records.
@@ -452,7 +452,7 @@ export class Model {
           this.formatFieldToDatabase(this._wrapValuesWithDefaults(field))
         ) as Values[],
       ).toDescription(),
-    );
+    ) as Promise<Model | Model[]>;
 
     if (!Array.isArray(values) && Array.isArray(results)) {
       return results[0];
@@ -476,7 +476,7 @@ export class Model {
           Array.isArray(idOrIds) ? idOrIds : [idOrIds],
         )
         .toDescription(),
-    );
+    ) as Model | Model[];
 
     return Array.isArray(idOrIds) ? results : (results as Model[])[0];
   }
@@ -683,7 +683,7 @@ export class Model {
         .where(this.getComputedPrimaryKey(), "=", id)
         .delete()
         .toDescription(),
-    );
+    ) as Promise<{affectedRows: number}>;
   }
 
   /** Delete selected records.
@@ -693,7 +693,7 @@ export class Model {
   static delete() {
     return this._runQuery(
       this._currentQuery.table(this.table).delete().toDescription(),
-    );
+    ) as Promise<{affectedRows: number}>;
   }
 
   /** Join a table to the current query.
@@ -883,7 +883,7 @@ export class Model {
           pivotOtherModel.field(pivotOtherModel.getComputedPrimaryKey()),
           pivot.field(pivotOtherModelField),
         )
-        .get();
+        .get() as Promise<Model | Model[]>;
     }
 
     const foreignKeyName = this._findModelForeignKeyField(model);
